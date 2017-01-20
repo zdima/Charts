@@ -33,6 +33,11 @@ public protocol ChartViewDelegate
     
     // Callbacks when the chart is moved / translated via drag gesture.
     @objc optional func chartTranslated(_ chartView: ChartViewBase, dX: CGFloat, dY: CGFloat)
+
+    // Callbacks when value has been tapped twice. This called only when zoom is disabled.
+    /// - parameter entry: The selected Entry.
+    /// - parameter highlight: The corresponding highlight object that contains information about the highlighted position such as dataSetIndex etc.
+    @objc optional func chartValueDoubleTap(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight)
 }
 
 open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
@@ -571,6 +576,16 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
         
         // redraw the chart
         setNeedsDisplay()
+    }
+
+    open func doubleTapValue(_ highlight: Highlight?)
+    {
+        if delegate == nil { return }
+        guard let h = highlight else { return }
+        guard let entry = _data?.entryForHighlight(h) else { return }
+
+        // notify the listener
+        delegate!.chartValueDoubleTap?(self, entry: entry, highlight: h)
     }
     
     /// - returns: The Highlight object (contains x-index and DataSet index) of the
