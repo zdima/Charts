@@ -45,7 +45,7 @@ open class BarHighlighter: ChartHighlighter
     
     internal override func getDistance(x1: CGFloat, y1: CGFloat, x2: CGFloat, y2: CGFloat) -> CGFloat
     {
-        return abs(x1 - x2)
+        return hypot(x1 - x2, y1 - y2)
     }
     
     internal override var data: ChartData?
