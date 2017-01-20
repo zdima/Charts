@@ -123,7 +123,6 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
         self.addGestureRecognizer(_doubleTapGestureRecognizer)
         self.addGestureRecognizer(_panGestureRecognizer)
         
-        _doubleTapGestureRecognizer.isEnabled = _doubleTapToZoomEnabled
         _panGestureRecognizer.isEnabled = _dragEnabled
 
         #if !os(tvOS)
@@ -554,6 +553,9 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
                 }
                 
                 self.zoom(scaleX: isScaleXEnabled ? 1.4 : 1.0, scaleY: isScaleYEnabled ? 1.4 : 1.0, x: location.x, y: location.y)
+            } else if _data !== nil && (data?.entryCount ?? 0) > 0 {
+                let h = getHighlightByTouchPoint(recognizer.location(in: self))
+                self.doubleTapValue( h )
             }
         }
     }
@@ -1573,11 +1575,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
         }
         set
         {
-            if _doubleTapToZoomEnabled != newValue
-            {
-                _doubleTapToZoomEnabled = newValue
-                _doubleTapGestureRecognizer.isEnabled = _doubleTapToZoomEnabled
-            }
+            _doubleTapToZoomEnabled = newValue
         }
     }
     
